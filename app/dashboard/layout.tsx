@@ -15,8 +15,6 @@ const sections = [
   { id: 'conversationFunnel', name: 'Conversation Funnel', icon: <Filter size={18} /> },
   { id: 'knowledgeSync', name: 'Knowledge Sync', icon: <RefreshCw size={18} /> },
   { id: 'eventDeepDive', name: 'Event Deep Dive', icon: <SearchCode size={18} /> },
-  { id: 'categoryTeamAnalysis', name: 'Category & Team', icon: <LayoutGrid size={18} /> },
-  { id: 'keyInsights', name: 'Key Insights', icon: <Lightbulb size={18} /> },
 ];
 
 // Original sections array without icons (can be removed or commented out if icons are always used)

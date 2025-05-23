@@ -168,46 +168,6 @@ const OverviewSection: React.FC<SectionProps> = ({ selectedTimePeriod, setActive
     // State for volume chart time grouping
   const [groupBy, setGroupBy] = React.useState<'daily' | 'weekly' | 'monthly'>('daily');
 
-  // --- Sample Data (to be replaced with actual data fetching) ---
-  const summaryMetricsData = [
-    {
-      id: 'aiResolution',
-      title: 'AI Resolution Rate',
-      value: '36.4%',
-      Icon: CheckCircle,
-      iconColor: 'text-green-600',
-      detail: '1,247 conversations',
-      tooltipText: 'Percentage of conversations fully resolved by AI without human intervention.',
-    },
-    {
-      id: 'totalConvos',
-      title: 'Total Conversations',
-      value: '3,428',
-      Icon: MessageSquare,
-      iconColor: 'text-blue-600',
-      detail: 'In the past 30 days',
-      tooltipText: 'Total number of unique conversations handled by the system.',
-    },
-    {
-      id: 'humanAssistedRate',
-      title: 'Human Assisted Rate',
-      value: '63.6%',
-      Icon: Users,
-      iconColor: 'text-amber-600',
-      detail: '2,181 conversations',
-      tooltipText: 'Percentage of conversations where a human agent intervened or took over.',
-    },
-    {
-      id: 'avgEventsPerConvo',
-      title: 'Avg. Events Per Conversation',
-      value: '12.8',
-      Icon: Activity,
-      iconColor: 'text-purple-600',
-      detail: '43,796 total events',
-      tooltipText: 'Average number of tracked system events (intent, knowledge, action, etc.) per conversation.',
-    },
-  ];
-
   // Assume aggregateVolumeData and getWeekNumber are in utils.ts
   // If not, they would need to be defined or moved there.
   // For now, let's create a placeholder if not available for the sake of this example.
@@ -287,22 +247,6 @@ const OverviewSection: React.FC<SectionProps> = ({ selectedTimePeriod, setActive
 
   return (
     <div className="space-y-6">
-
-      {/* Row 1: Summary Metrics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {summaryMetricsData.map((metric) => (
-          <div key={metric.id} title={metric.tooltipText} className="bg-white p-4 shadow rounded-lg flex items-center space-x-4">
-            <div className={`p-3 rounded-full ${metric.iconColor} bg-opacity-10`}>
-              <metric.Icon className={`w-5 h-5 ${metric.iconColor}`} />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600 font-medium">{metric.title}</p>
-              <p className="text-2xl font-semibold text-gray-800">{metric.value}</p>
-              <p className="text-xs text-gray-500 mt-1">{metric.detail}</p>
-            </div>
-          </div>
-        ))}
-      </div>
 
       {/* Row 2: Time Series Graph (Left) and Activity Logs (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -459,6 +403,35 @@ const OverviewSection: React.FC<SectionProps> = ({ selectedTimePeriod, setActive
         )}
       </div>
 
+
+      {/* Key Statistics Section */}
+      <div className="bg-white p-4 shadow rounded-lg mt-6">
+        <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
+          <Users className="w-5 h-5 mr-2 text-blue-500" /> Overall Performance Metrics
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+          <div className="p-4 border rounded-lg">
+            <p className="text-sm text-gray-500">AI Resolution Rate</p>
+            <p className="text-2xl font-bold text-green-600">36.4%</p>
+            <p className="text-xs text-gray-400">1,247 conversations</p>
+          </div>
+          <div className="p-4 border rounded-lg">
+            <p className="text-sm text-gray-500">Total Conversations</p>
+            <p className="text-2xl font-bold text-gray-700">3,428</p>
+            <p className="text-xs text-gray-400">In the past 30 days</p>
+          </div>
+          <div className="p-4 border rounded-lg">
+            <p className="text-sm text-gray-500">Action Success Rate</p>
+            <p className="text-2xl font-bold text-blue-600">63.6%</p>
+            <p className="text-xs text-gray-400">2,181 conversations</p>
+          </div>
+          <div className="p-4 border rounded-lg">
+            <p className="text-sm text-gray-500">Handoff Accuracy</p>
+            <p className="text-2xl font-bold text-purple-600">12.8%</p>
+            <p className="text-xs text-gray-400">3,796 total conversations</p>
+          </div>
+        </div>
+      </div>
 
       {/* TODO: Add other overview components like User Satisfaction, Top Intents, Key Issues */}
     </div>

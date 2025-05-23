@@ -8,7 +8,6 @@ import AIPerformanceSection from './sections/AIPerformanceSection';
 import ConversationFunnelSection from './sections/ConversationFunnelSection';
 import ResolutionHandoffSection from './sections/ResolutionHandoffSection';
 import EventDeepDiveSection from './sections/EventDeepDiveSection';
-import KeyInsightsSection from './sections/KeyInsightsSection';
 import KnowledgeSyncSection from './sections/KnowledgeSyncSection';
 import ActivityLogSection from './sections/ActivityLogSection';
 import CombinedAnalysisSection from './sections/CombinedAnalysisSection'; // New combined section
@@ -36,10 +35,6 @@ const ConversationMetricsDashboard: React.FC<DashboardPageProps> = () => {
         return <ResolutionHandoffSection selectedTimePeriod={selectedTimePeriod} setActiveSection={setSelectedSection} />;
       case 'eventDeepDive':
         return <EventDeepDiveSection selectedTimePeriod={selectedTimePeriod} setActiveSection={setSelectedSection} />;
-      case 'categoryTeamAnalysis':
-        return <CombinedAnalysisSection selectedTimePeriod={selectedTimePeriod} setActiveSection={setSelectedSection} />;
-      case 'keyInsights':
-        return <KeyInsightsSection selectedTimePeriod={selectedTimePeriod} setActiveSection={setSelectedSection} />;
       case 'knowledgeSync': 
         return <KnowledgeSyncSection selectedTimePeriod={selectedTimePeriod} setActiveSection={setSelectedSection} />;
       case 'activityLogs':

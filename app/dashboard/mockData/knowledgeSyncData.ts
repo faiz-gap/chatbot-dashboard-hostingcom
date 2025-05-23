@@ -20,14 +20,34 @@ export const mockSyncOperations: SyncOperation[] = [
       { id: 'evt-7', timestamp: subMinutes(subHours(new Date(), 2), -9).toISOString(), description: 'Sync completed successfully.', status: 'success', type: 'success' },
     ],
     syncedContentPreview: [
-      { id: 'doc-001', title: 'Getting Started with Our API', type: 'Guide', status: 'Synced', itemType: 'article', action: 'updated', parentCategory: 'API Documentation' },
-      { id: 'doc-002', title: 'Troubleshooting Common Issues', type: 'FAQ', status: 'Synced with warnings', itemType: 'article', action: 'updated', parentCategory: 'Support' },
-      { id: 'doc-003', title: 'Advanced Configuration', type: 'Documentation', status: 'Synced', itemType: 'article', action: 'created', parentCategory: 'API Documentation' },
-      { id: 'cat-001', title: 'API Documentation', type: 'Category', status: 'No Change', itemType: 'category', action: 'no_change' },
+      // Categories
+      { id: 'cat-001', title: 'API Documentation', type: 'Category', status: 'Synced', itemType: 'category', action: 'updated' },
       { id: 'cat-002', title: 'Support', type: 'Category', status: 'Synced', itemType: 'category', action: 'created' },
-      { id: 'doc-007', title: 'New Feature X Guide', type: 'Guide', status: 'Synced', itemType: 'article', action: 'created', parentCategory: 'Product Updates' },
       { id: 'cat-003', title: 'Product Updates', type: 'Category', status: 'Synced', itemType: 'category', action: 'created' },
-      { id: 'doc-008', title: 'Old Feature Y Deprecated', type: 'Guide', status: 'Synced', itemType: 'article', action: 'deleted', parentCategory: 'Archived Features' },
+      { id: 'cat-004', title: 'Security Guidelines', type: 'Category', status: 'Synced with warnings', itemType: 'category', action: 'updated' },
+      
+      // Articles in API Documentation
+      { id: 'doc-001', title: 'Getting Started with Our API', type: 'Guide', status: 'Synced', itemType: 'article', action: 'updated', parentCategory: 'API Documentation' },
+      { id: 'doc-003', title: 'Advanced Configuration', type: 'Documentation', status: 'Synced', itemType: 'article', action: 'created', parentCategory: 'API Documentation' },
+      { id: 'doc-009', title: 'API Rate Limits Policy v2', type: 'Policy', status: 'Synced with warnings', itemType: 'article', action: 'updated', parentCategory: 'API Documentation' },
+      { id: 'doc-010', title: 'Authentication Methods', type: 'Guide', status: 'Synced', itemType: 'article', action: 'created', parentCategory: 'API Documentation' },
+      
+      // Articles in Support
+      { id: 'doc-002', title: 'Troubleshooting Common Issues', type: 'FAQ', status: 'Synced with warnings', itemType: 'article', action: 'updated', parentCategory: 'Support' },
+      { id: 'doc-011', title: 'Contact Support Process', type: 'Guide', status: 'Synced', itemType: 'article', action: 'created', parentCategory: 'Support' },
+      { id: 'doc-012', title: 'Known Issues and Workarounds', type: 'FAQ', status: 'Synced', itemType: 'article', action: 'updated', parentCategory: 'Support' },
+      
+      // Articles in Product Updates
+      { id: 'doc-007', title: 'New Feature X Guide', type: 'Guide', status: 'Synced', itemType: 'article', action: 'created', parentCategory: 'Product Updates' },
+      { id: 'doc-013', title: 'Version 2.1 Release Notes', type: 'Release Notes', status: 'Synced', itemType: 'article', action: 'created', parentCategory: 'Product Updates' },
+      
+      // Articles in Security Guidelines
+      { id: 'doc-014', title: 'Data Protection Best Practices', type: 'Policy', status: 'Synced with warnings', itemType: 'article', action: 'updated', parentCategory: 'Security Guidelines' },
+      { id: 'doc-015', title: 'Incident Response Procedures', type: 'Procedure', status: 'Failed to sync', itemType: 'article', action: 'failed_to_process', parentCategory: 'Security Guidelines' },
+      
+      // Uncategorized articles
+      { id: 'doc-016', title: 'Company Newsletter Template', type: 'Template', status: 'Synced', itemType: 'article', action: 'created' },
+      { id: 'doc-008', title: 'Old Feature Y Deprecated', type: 'Guide', status: 'Synced', itemType: 'article', action: 'deleted' },
     ]
   },
   {
@@ -60,11 +80,22 @@ export const mockSyncOperations: SyncOperation[] = [
       { id: 'evt-cwe-4', timestamp: subMinutes(subDays(new Date(), 3), -35).toISOString(), description: 'Sync completed with 1 error.', status: 'warning', type: 'warning' },
     ],
     syncedContentPreview: [
+      // Categories
+      { id: 'cat-hr-001', title: 'HR Policies', type: 'Category', status: 'No Change', itemType: 'category', action: 'no_change' },
+      { id: 'cat-it-001', title: 'IT Security', type: 'Category', status: 'Synced', itemType: 'category', action: 'updated' },
+      { id: 'cat-internal-001', title: 'Internal Memos', type: 'Category', status: 'Synced with warnings', itemType: 'category', action: 'updated' },
+      
+      // Articles in HR Policies
       { id: 'doc-004', title: 'Onboarding New Hires', type: 'Policy', status: 'Synced', itemType: 'article', action: 'updated', parentCategory: 'HR Policies' },
+      { id: 'doc-hr-001', title: 'Remote Work Guidelines', type: 'Policy', status: 'Synced', itemType: 'article', action: 'created', parentCategory: 'HR Policies' },
+      
+      // Articles in IT Security
       { id: 'doc-005', title: 'Security Best Practices', type: 'Guide', status: 'Synced', itemType: 'article', action: 'created', parentCategory: 'IT Security' },
-      { id: 'cat-004', title: 'HR Policies', type: 'Category', status: 'No Change', itemType: 'category', action: 'no_change' },
-      { id: 'cat-005', title: 'IT Security', type: 'Category', status: 'Synced', itemType: 'category', action: 'updated' },
-      { id: 'doc-006', title: 'Internal Memo Q3', type: 'Memo', status: 'Processing Failed', itemType: 'article', action: 'failed_to_process', parentCategory: 'Internal Memos'}
+      { id: 'doc-it-001', title: 'Password Policy Update', type: 'Policy', status: 'Synced', itemType: 'article', action: 'updated', parentCategory: 'IT Security' },
+      
+      // Articles in Internal Memos
+      { id: 'doc-006', title: 'Internal Memo Q3', type: 'Memo', status: 'Processing Failed', itemType: 'article', action: 'failed_to_process', parentCategory: 'Internal Memos'},
+      { id: 'doc-memo-001', title: 'Q3 Performance Review Guidelines', type: 'Memo', status: 'Synced', itemType: 'article', action: 'created', parentCategory: 'Internal Memos'},
     ]
   },
   {

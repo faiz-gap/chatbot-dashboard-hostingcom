@@ -97,7 +97,7 @@ const ConversationChatView: React.FC<ConversationChatViewProps> = ({ logs }) => 
   const chatMessages = transformLogsToChatMessages(logs);
 
   if (chatMessages.length === 0) {
-    return <p className="text-sm text-gray-500 p-4 text-center">No chat messages to display for this conversation.</p>;
+    return <p className="text-xs text-gray-500 p-2 text-center">No chat messages to display for this conversation.</p>;
   }
 
   const getMessageAlignment = (type: ChatMessage['type']) => {
@@ -113,46 +113,46 @@ const ConversationChatView: React.FC<ConversationChatViewProps> = ({ logs }) => 
 
   const getMessageBubbleStyle = (type: ChatMessage['type']) => {
     switch (type) {
-      case 'user': return 'bg-blue-500 text-white rounded-lg rounded-br-none';
-      case 'bot': return 'bg-gray-200 text-gray-800 rounded-lg rounded-bl-none';
-      case 'agent': return 'bg-green-100 text-green-800 rounded-lg rounded-bl-none';
-      case 'internal_note': return 'bg-yellow-100 border border-yellow-300 text-yellow-800 rounded-lg w-full text-center italic';
-      case 'system_event': return 'bg-purple-50 border border-purple-200 text-purple-700 rounded-lg w-full text-xs';
-      default: return 'bg-gray-100 text-gray-700 rounded-lg';
+      case 'user': return 'bg-blue-500 text-white rounded-md rounded-br-none';
+      case 'bot': return 'bg-gray-200 text-gray-800 rounded-md rounded-bl-none';
+      case 'agent': return 'bg-green-100 text-green-800 rounded-md rounded-bl-none';
+      case 'internal_note': return 'bg-yellow-100 border border-yellow-300 text-yellow-800 rounded-md w-full text-center italic';
+      case 'system_event': return 'bg-purple-50 border border-purple-200 text-purple-700 rounded-md w-full text-[10px]';
+      default: return 'bg-gray-100 text-gray-700 rounded-md';
     }
   };
   
   const getMessageIcon = (type: ChatMessage['type'], sourceComponent?: string) => {
     switch (type) {
-      case 'user': return <User className="w-5 h-5 text-blue-300" />;
-      case 'bot': return <Bot className="w-5 h-5 text-gray-500" />;
-      case 'agent': return <Mic className="w-5 h-5 text-green-600" />;
-      case 'internal_note': return <ClipboardList className="w-5 h-5 text-yellow-600" />;
-      case 'system_event': return <MessageCircle className="w-5 h-5 text-purple-500" />;
-      default: return <MessageCircle className="w-5 h-5 text-gray-400" />;
+      case 'user': return <User className="w-3.5 h-3.5 text-blue-300" />;
+      case 'bot': return <Bot className="w-3.5 h-3.5 text-gray-500" />;
+      case 'agent': return <Mic className="w-3.5 h-3.5 text-green-600" />;
+      case 'internal_note': return <ClipboardList className="w-3.5 h-3.5 text-yellow-600" />;
+      case 'system_event': return <MessageCircle className="w-3.5 h-3.5 text-purple-500" />;
+      default: return <MessageCircle className="w-3.5 h-3.5 text-gray-400" />;
     }
   };
 
   return (
-    <div className="flex-grow space-y-3 p-1 overflow-y-auto bg-white rounded-b-md">
+    <div className="flex-grow space-y-2 p-1 overflow-y-auto bg-white rounded-b-md">
       {chatMessages.map((msg, index) => (
         <div key={msg.id} className={`flex flex-col ${getMessageAlignment(msg.type)}`}>
-          <div className={`flex items-end gap-2 max-w-[85%] ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+          <div className={`flex items-end gap-1.5 max-w-[85%] ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
             {msg.type !== 'user' && (
-                <div className="flex-shrink-0 self-start p-1 rounded-full bg-gray-100">
+                <div className="flex-shrink-0 self-start p-0.5 rounded-full bg-gray-100">
                     {getMessageIcon(msg.type, msg.sourceComponent)}
                 </div>
             )}
-            <div className={`p-2.5 text-sm ${getMessageBubbleStyle(msg.type)} shadow-sm`}>
+            <div className={`px-2 py-1.5 text-xs ${getMessageBubbleStyle(msg.type)} shadow-sm`}>
               {msg.text}
             </div>
              {msg.type === 'user' && (
-                <div className="flex-shrink-0 self-start p-1 rounded-full bg-blue-100">
+                <div className="flex-shrink-0 self-start p-0.5 rounded-full bg-blue-100">
                     {getMessageIcon(msg.type, msg.sourceComponent)}
                 </div>
             )}
           </div>
-          <p className={`text-xs text-gray-400 mt-1 ${msg.type === 'user' ? 'text-right mr-2' : (msg.type === 'internal_note' || msg.type === 'system_event' ? 'text-center w-full' : 'text-left ml-2') }`}>
+          <p className={`text-[10px] text-gray-400 mt-0.5 ${msg.type === 'user' ? 'text-right mr-1' : (msg.type === 'internal_note' || msg.type === 'system_event' ? 'text-center w-full' : 'text-left ml-1') }`}>
             {msg.sourceComponent && msg.type !== 'user' ? `${msg.sourceComponent} · ` : ''}
             {format(parseISO(msg.timestamp), 'HH:mm')}
           </p>

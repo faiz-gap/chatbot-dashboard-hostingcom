@@ -15,43 +15,57 @@ const SyncEventTimeline: React.FC<{ events: SyncEventType[] }> = ({ events }) =>
     return <p className="text-sm text-gray-500 p-3">No events for this sync operation.</p>;
   }
   return (
-    <div className="space-y-3 p-3 border-t border-gray-200">
-      <h4 className="text-sm font-semibold text-gray-700 mb-2">Sync Event Log:</h4>
-      {events.map((event, index) => {
-        let IconComponent;
-        let iconColor = 'text-gray-500';
-        switch (event.status) {
-          case 'success': IconComponent = CheckCircle2; iconColor = 'text-green-500'; break;
-          case 'failure': IconComponent = XCircle; iconColor = 'text-red-500'; break;
-          case 'warning': IconComponent = AlertTriangle; iconColor = 'text-yellow-500'; break;
-          default: IconComponent = Info; iconColor = 'text-blue-500'; break;
-        }
-        return (
-          <div key={event.id} className="flex items-start text-xs">
-            <IconComponent className={`w-3.5 h-3.5 mr-2 mt-0.5 flex-shrink-0 ${iconColor}`} />
-            <div className="flex-grow">
-              <p className="font-medium text-gray-700">{event.description}</p>
-              <p className="text-gray-500">{format(parseISO(event.timestamp), 'MMM d, HH:mm:ss')}</p>
-              {event.details && (
-                <pre className="mt-1 p-1.5 bg-gray-50 text-gray-600 text-xs rounded-md whitespace-pre-wrap break-all">
-                  {JSON.stringify(event.details, null, 2)}
-                </pre>
-              )}
+    <div className="p-4 bg-gray-50/50 h-full">
+      <h4 className="text-base font-semibold text-gray-800 mb-3">Sync Event Log</h4>
+      <div className="space-y-3">
+        {events.map((event, index) => {
+          let IconComponent;
+          let iconColor = 'text-gray-500';
+          switch (event.status) {
+            case 'success': IconComponent = CheckCircle2; iconColor = 'text-green-500'; break;
+            case 'failure': IconComponent = XCircle; iconColor = 'text-red-500'; break;
+            case 'warning': IconComponent = AlertTriangle; iconColor = 'text-yellow-500'; break;
+            default: IconComponent = Info; iconColor = 'text-blue-500'; break;
+          }
+          return (
+            <div key={event.id} className="flex items-start text-xs">
+              <IconComponent className={`w-3.5 h-3.5 mr-2 mt-0.5 flex-shrink-0 ${iconColor}`} />
+              <div className="flex-grow">
+                <p className="font-medium text-gray-700">{event.description}</p>
+                <p className="text-gray-500">{format(parseISO(event.timestamp), 'MMM d, HH:mm:ss')}</p>
+                {event.details && (
+                  <pre className="mt-1 p-1.5 bg-gray-50 text-gray-600 text-xs rounded-md whitespace-pre-wrap break-all">
+                    {JSON.stringify(event.details, null, 2)}
+                  </pre>
+                )}
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };
 
 const SyncedContentDetails: React.FC<{ content: SyncOperation['syncedContentPreview'], operationStatus: SyncOperation['status'] }> = ({ content, operationStatus }) => {
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+
   if (!content || content.length === 0) {
     if (operationStatus === 'failure') {
       return <p className="text-sm text-gray-500 p-4">Sync operation failed, no content to display.</p>;
     }
     return <p className="text-sm text-gray-500 p-4">No specific content changes were recorded for this sync operation.</p>;
   }
+
+  const toggleCategory = (categoryName: string) => {
+    const newExpanded = new Set(expandedCategories);
+    if (newExpanded.has(categoryName)) {
+      newExpanded.delete(categoryName);
+    } else {
+      newExpanded.add(categoryName);
+    }
+    setExpandedCategories(newExpanded);
+  };
 
   const getStatusIconAndColor = (status: string) => {
     if (status.toLowerCase().includes('synced') && !status.toLowerCase().includes('issue') && !status.toLowerCase().includes('warning') && !status.toLowerCase().includes('fail')) {
@@ -65,6 +79,18 @@ const SyncedContentDetails: React.FC<{ content: SyncOperation['syncedContentPrev
     }
     return { Icon: Info, color: 'text-blue-500', bgColor: 'bg-blue-50' }; // Default
   };
+
+  // Group only articles by category, ignore standalone categories
+  const articlesByCategory = content
+    .filter(item => item.itemType === 'article')
+    .reduce((acc, item) => {
+      const categoryName = item.parentCategory || 'Uncategorized';
+      if (!acc[categoryName]) {
+        acc[categoryName] = [];
+      }
+      acc[categoryName].push(item);
+      return acc;
+    }, {} as Record<string, typeof content>);
 
   const counts = content.reduce((acc, item) => {
     const { status } = item;
@@ -81,7 +107,7 @@ const SyncedContentDetails: React.FC<{ content: SyncOperation['syncedContentPrev
   }, { successful: 0, withIssues: 0, failed: 0, other: 0 });
 
   return (
-    <div className="p-4 border-t border-gray-200 bg-gray-50/50">
+    <div className="p-4 bg-gray-50/50 h-full">
       <h4 className="text-base font-semibold text-gray-800 mb-3">Content Sync Details</h4>
       
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4 text-xs">
@@ -103,23 +129,87 @@ const SyncedContentDetails: React.FC<{ content: SyncOperation['syncedContentPrev
         </div>
       </div>
 
-      {content.length > 0 && (
-        <div className="space-y-2 mt-2">
-          <h5 className="text-sm font-medium text-gray-600 mb-1">Itemized Changes:</h5>
-          {content.map(item => {
-            const { Icon, color, bgColor } = getStatusIconAndColor(item.status);
+      {Object.keys(articlesByCategory).length > 0 && (
+        <div className="space-y-3 mt-4">
+          <h5 className="text-sm font-medium text-gray-600 mb-2">Articles by Category:</h5>
+          
+          {Object.entries(articlesByCategory).map(([categoryName, articles]) => {
+            const isExpanded = expandedCategories.has(categoryName);
+            const categoryItemCount = articles.length;
+            
+            // Calculate status counts for this category
+            const categoryStatusCounts = articles.reduce((acc, article) => {
+              const { status } = article;
+              if (status.toLowerCase().includes('synced') && !status.toLowerCase().includes('issue') && !status.toLowerCase().includes('warning') && !status.toLowerCase().includes('fail')) {
+                acc.successful += 1;
+              } else if (status.toLowerCase().includes('warning') || status.toLowerCase().includes('issue') || status.toLowerCase().includes('missing')) {
+                acc.withIssues += 1;
+              } else if (status.toLowerCase().includes('fail')) {
+                acc.failed += 1;
+              } else {
+                acc.other += 1;
+              }
+              return acc;
+            }, { successful: 0, withIssues: 0, failed: 0, other: 0 });
+            
             return (
-              <div key={item.id} className={`p-2.5 rounded-md border ${bgColor.replace('bg-', 'border-')} flex items-center justify-between`}>
-                <div className="flex items-center">
-                  <Icon className={`w-4 h-4 mr-2 flex-shrink-0 ${color}`} />
-                  <div>
-                    <p className="text-sm font-medium text-gray-800">{item.title}</p>
-                    <p className="text-xs text-gray-500">ID: {item.id} • Type: {item.itemType.charAt(0).toUpperCase() + item.itemType.slice(1)} ({item.type}) • Action: {item.action.charAt(0).toUpperCase() + item.action.slice(1)}{item.itemType === 'article' && item.parentCategory ? ` • Parent: ${item.parentCategory}` : ''}</p>
+              <div key={categoryName} className="mb-3">
+                {/* Category Header - Clickable */}
+                <div 
+                  className="bg-white p-3 rounded-md cursor-pointer hover:bg-gray-50 border border-gray-200 shadow-sm flex items-center justify-between"
+                  onClick={() => toggleCategory(categoryName)}
+                >
+                  <div className="flex items-center">
+                    {isExpanded ? 
+                      <ChevronDown className="w-4 h-4 mr-2 text-gray-600" /> : 
+                      <ChevronRight className="w-4 h-4 mr-2 text-gray-600" />
+                    }
+                    <div>
+                      <h6 className="text-sm font-semibold text-gray-800">{categoryName}</h6>
+                      <div className="flex items-center space-x-4 mt-1">
+                        <span className="text-xs text-gray-600">{categoryItemCount} items</span>
+                        {categoryStatusCounts.successful > 0 && (
+                          <span className="text-xs text-green-600 font-medium">{categoryStatusCounts.successful} success</span>
+                        )}
+                        {categoryStatusCounts.withIssues > 0 && (
+                          <span className="text-xs text-yellow-600 font-medium">{categoryStatusCounts.withIssues} issues</span>
+                        )}
+                        {categoryStatusCounts.failed > 0 && (
+                          <span className="text-xs text-red-600 font-medium">{categoryStatusCounts.failed} failed</span>
+                        )}
+                        {categoryStatusCounts.other > 0 && (
+                          <span className="text-xs text-blue-600 font-medium">{categoryStatusCounts.other} other</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {isExpanded ? 'Click to collapse' : 'Click to expand'}
                   </div>
                 </div>
-                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${bgColor} ${color.replace('text-','text-').replace('-500', '-700')}`}>
-                  {item.status}
-                </span>
+
+                {/* Articles in Category - Collapsible */}
+                {isExpanded && (
+                  <div className="ml-6 mt-2 space-y-2">
+                    {articles.map(item => {
+                      const { Icon, color, bgColor } = getStatusIconAndColor(item.status);
+                      return (
+                        <div key={item.id} className={`p-2.5 rounded-md border ${bgColor.replace('bg-', 'border-')} flex items-center justify-between`}>
+                          <div className="flex items-center">
+                            <Icon className={`w-4 h-4 mr-2 flex-shrink-0 ${color}`} />
+                            <div>
+                              <p className="text-sm font-medium text-gray-800">{item.title}</p>
+                              <p className="text-xs text-gray-500">ID: {item.id} • Type: {item.itemType.charAt(0).toUpperCase() + item.itemType.slice(1)} ({item.type}) • Action: {item.action.charAt(0).toUpperCase() + item.action.slice(1)}</p>
+                            </div>
+                          </div>
+                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${bgColor} ${color.replace('text-','text-').replace('-500', '-700')}`}>
+                            {item.status}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             );
           })}
@@ -256,10 +346,7 @@ const KnowledgeSyncSection: React.FC<SectionProps> = ({ selectedTimePeriod }) =>
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold text-gray-800">Knowledge Sync Status</h2>
-        {/* Placeholder for filters or actions */}
-      </div>
+      
 
       {/* Sync Control Bar */}
       <div className="bg-white p-4 rounded-lg shadow-sm mb-6 flex items-center justify-between">
@@ -335,10 +422,12 @@ const KnowledgeSyncSection: React.FC<SectionProps> = ({ selectedTimePeriod }) =>
             </div>
 
             {isExpanded && (
-              <div className="bg-white">
-                {/* Top: Event Timeline for the sync operation */}
-                <SyncEventTimeline events={op.events} />
-                {/* Bottom: Synced Content Details */}
+              <div className="bg-white grid grid-cols-1 lg:grid-cols-2 min-h-0">
+                {/* Left: Event Timeline for the sync operation */}
+                <div className="border-r border-gray-200">
+                  <SyncEventTimeline events={op.events} />
+                </div>
+                {/* Right: Synced Content Details */}
                 <SyncedContentDetails content={op.syncedContentPreview} operationStatus={op.status} />
               </div>
             )}

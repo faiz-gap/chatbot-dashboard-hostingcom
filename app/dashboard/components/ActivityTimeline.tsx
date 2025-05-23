@@ -83,15 +83,15 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({ logs, currentPage, 
   }
 
   return (
-    <div className="space-y-0">
+    <div className="space-y-2">
       {logsToDisplay.map((log, index) => {
         const statusColors = getStatusClasses(log.status);
         const isExpanded = expandedId === log.logId;
 
         return (
-          <div key={log.logId} className="flex items-center mb-0">
+          <div key={log.logId} className="flex items-center mb-2">
             {/* Timestamp Area */}
-            <div className="w-28 text-right pr-4 pt-1 flex-shrink-0">
+            <div className="w-32 text-right pr-4 pt-1 flex-shrink-0">
               <p className="text-xs text-gray-500 whitespace-nowrap" title={isValid(parseISO(log.timestamp)) ? format(parseISO(log.timestamp), 'PPpp') : 'Invalid date'}>
                 {isValid(parseISO(log.timestamp)) ? format(parseISO(log.timestamp), 'HH:mm:ss') : '--:--:--'}
               </p>
@@ -103,10 +103,10 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({ logs, currentPage, 
             {/* </div> */}
 
             {/* Content Card (Right Side - Expandable) - Adjust margin if dot removal affects spacing */}
-            <div className={`bg-white rounded-sm shadow-xs w-full overflow-hidden ml-[-1rem] ${isExpanded ? 'ring-1 ring-blue-400' : 'hover:shadow-sm'}`}> {/* Example: ml-[-1rem] if dot had 1rem total space via its container's mr-4. Adjust as needed. Original dot container had mr-4 (1rem) */} 
+            <div className={`bg-white rounded-md shadow-sm w-full overflow-hidden ${isExpanded ? 'ring-1 ring-blue-400' : 'hover:shadow-md'}`}> 
               <div onClick={() => toggleExpand(log.logId)} className="cursor-pointer">
                 {/* Always visible: Compact single-row summary (acts as header when expanded) */}
-                <div className="flex items-center space-x-2 py-1 px-2 w-full">
+                <div className="flex items-center space-x-2 py-2 px-3 w-full">
                   {getStatusIcon(log.status)}
                   {/* Timestamp removed from here, as it's displayed in the left gutter */}
                   {getEventTypeIcon(log.type)}
@@ -119,9 +119,9 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({ logs, currentPage, 
 
               {/* Expanded state: Detailed view */}
               {isExpanded && (
-                <div className="pt-2 pb-3 px-3 border-t border-gray-200">
-                  <div className="max-h-48 overflow-y-auto pr-1"> {/* Added pr-1 for scrollbar spacing if needed */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-3 gap-y-1 text-xs mb-2">
+                <div className="pt-3 pb-4 px-4 border-t border-gray-200">
+                  <div> {/* Removed max-h constraint to allow natural expansion */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 text-xs mb-3">
                     <div className="col-span-1 sm:col-span-2 md:col-span-3"><strong className="text-gray-600">Description:</strong> {log.description}</div>
                     <div><strong className="text-gray-600">Timestamp:</strong> {isValid(parseISO(log.timestamp)) ? format(parseISO(log.timestamp), 'PPpp') : 'Invalid date'}</div>
                     <div><strong className="text-gray-600">Status:</strong> <span className={statusColors.badgeText}>{log.status}</span></div>
@@ -130,8 +130,8 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({ logs, currentPage, 
                     {log.conversationId && <div><strong className="text-gray-600">Conv. ID:</strong> {log.conversationId}</div>}
                   </div>
                   {log.details && Object.keys(log.details).length > 0 && (
-                    <div className="mb-2">
-                      <div className="mt-1 p-2 bg-gray-50 rounded text-xs">
+                    <div className="mb-3">
+                      <div className="mt-2 p-3 bg-gray-50 rounded text-xs">
                         {renderKeyDetails(log)}
                       </div>
                     </div>
@@ -168,21 +168,21 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({ logs, currentPage, 
         );
       })}
       {isPaginationActive && totalPages > 1 && (
-        <div className="flex justify-between items-center mt-3 pt-2 border-t border-gray-200">
+        <div className="flex justify-center items-center mt-4 pt-3 border-t border-gray-200 space-x-2">
           <button 
             onClick={() => onPageChange(currentPage! - 1)} 
             disabled={currentPage === 1}
-            className="px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Previous
           </button>
-          <span className="text-xs text-gray-600">
+          <span className="text-xs text-gray-600 px-2">
             Page {currentPage} of {totalPages}
           </span>
           <button 
             onClick={() => onPageChange(currentPage! + 1)} 
             disabled={currentPage === totalPages}
-            className="px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
           </button>
